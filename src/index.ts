@@ -129,7 +129,7 @@ function createWeightFontFace(name: string, weight: number, config: FontWeightCo
   return [
     config.italic ? createSingleFontFace(name, weight, true, config.italic) : '',
     config.normal ? createSingleFontFace(name, weight, false, config.normal) : '',
-  ].join();
+  ].join('');
 }
 
 function createSingleFontFace(
