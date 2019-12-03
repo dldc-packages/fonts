@@ -8,7 +8,7 @@ export type FontWeight_700 = 700 | 'Bold';
 export type FontWeight_800 = 800 | 'ExtraBold' | 'UltraBold';
 export type FontWeight_900 = 900 | 'Black' | 'Heavy';
 
-interface FontByWeightNum {
+export interface FontByWeightNum {
   100: FontWeight_100;
   200: FontWeight_200;
   300: FontWeight_300;
@@ -33,7 +33,7 @@ export type FontWeight =
 
 export type FontWeightNum = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 
-const FontWeightNames: { [K in FontWeight]: FontWeightNum } = {
+export const FontWeightNames: { [K in FontWeight]: FontWeightNum } = {
   Thin: 100,
   ExtraLight: 200,
   UltraLight: 200,
@@ -107,7 +107,7 @@ type FontStyles<T extends FontConfig> = {
   [W in AllWeight<T>]: FontWeightStyle<T[WeightNumFromWeight<W>]>;
 };
 
-interface Font<T extends FontConfig> {
+export interface Font<T extends FontConfig> {
   fontFaces: string;
   styles: FontStyles<T>;
 }
