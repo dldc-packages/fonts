@@ -1,6 +1,6 @@
 {
   "name": "ts-fonts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A tool to create dynamic colors by interpolating multiple colors",
   "keywords": [],
   "homepage": "https://github.com/etienne-dldc/ts-fonts#readme",
