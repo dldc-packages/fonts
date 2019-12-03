@@ -138,15 +138,15 @@ function createSingleFontFace(
   italic: boolean,
   paths: FontWeightPaths
 ) {
-  return `
-    @font-face {
-      font-family: '${name}';
-      src: url('${paths.woff2}') format('woff2'),
-          url('${paths.woff}') format('woff');
-      font-weight: ${weight};
-      font-style: ${italic ? 'italic' : 'normal'};
-    }
-  `;
+  return [
+    `@font-face {`,
+    `  font-family: '${name}';`,
+    `  src: url('${paths.woff2}') format('woff2'),`,
+    `      url('${paths.woff}') format('woff');`,
+    `  font-weight: ${weight};`,
+    `  font-style: ${italic ? 'italic' : 'normal'};`,
+    `}`,
+  ].join('\n');
 }
 
 function createStyle<T extends FontConfig>(name: string, config: T): FontStyles<T> {
