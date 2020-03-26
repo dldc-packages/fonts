@@ -81,8 +81,8 @@ export interface FontWeightPaths {
 }
 
 export interface FontWeightConfig {
-  normal?: FontWeightPaths;
-  italic?: FontWeightPaths;
+  normal?: FontWeightPaths | string;
+  italic?: FontWeightPaths | string;
 }
 
 export type FontConfig = {
@@ -136,13 +136,15 @@ function createSingleFontFace(
   name: string,
   weight: number,
   italic: boolean,
-  paths: FontWeightPaths
+  paths: FontWeightPaths | string
 ) {
+  const woff = typeof paths === 'string' ? paths + '.woff' : paths.woff;
+  const woff2 = typeof paths === 'string' ? paths + '.woff2' : paths.woff2;
   return [
     `@font-face {`,
     `  font-family: '${name}';`,
-    `  src: url('${paths.woff2}') format('woff2'),`,
-    `      url('${paths.woff}') format('woff');`,
+    `  src: url('${woff}') format('woff2'),`,
+    `      url('${woff2}') format('woff');`,
     `  font-weight: ${weight};`,
     `  font-style: ${italic ? 'italic' : 'normal'};`,
     `}`,
@@ -150,12 +152,18 @@ function createSingleFontFace(
 }
 
 function createStyle<T extends FontConfig>(name: string, config: T): FontStyles<T> {
+  const cache: { [K in FontWeightNum]?: FontWeightStyle<any> } = {};
+
   return Object.keys(FontWeightNames).reduce<FontStyles<T>>((acc, weight) => {
     const weightNum = resolveFontWeight(weight as any);
     if ((config as any)[weightNum] === undefined) {
       return acc;
     }
-    (acc as any)[weight] = createWeightStyle(name, weightNum, (config as any)[weightNum]);
+    const fn = cache[weightNum] || createWeightStyle(name, weightNum, (config as any)[weightNum]);
+    if (!cache[weightNum]) {
+      cache[weightNum] = fn;
+    }
+    (acc as any)[weight] = fn;
     return acc;
   }, {} as any);
 }
