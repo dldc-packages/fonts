@@ -1,7 +1,7 @@
 import { Font } from '../src';
 
 test('create a font', () => {
-  const font = Font.create('Demo', {
+  const DemoFont = Font.create('Demo', {
     100: {
       normal: { woff: '/path-to-font-normal.woff', woff2: '/path-to-font-normal.woff2' },
       italic: {
@@ -9,45 +9,75 @@ test('create a font', () => {
         woff2: '/path-to-font-normal-italic.woff2',
       },
     },
+    600: {
+      italic: '/path-to-font-semibold-italic',
+    },
     700: {
-      normal: '/path-to-font-thin',
+      normal: '/path-to-font-bold',
     },
   });
 
-  expect(font.styles.Thin).toBe(font.styles[100]);
+  expect(DemoFont.styles.Thin).toBe(DemoFont.styles[100]);
 
-  expect(font.fontFaces).toMatchInlineSnapshot(`
+  expect(DemoFont.fontFaces).toMatchInlineSnapshot(`
     "@font-face {
       font-family: 'Demo';
       src: url('/path-to-font-normal-italic.woff') format('woff2'),
           url('/path-to-font-normal-italic.woff2') format('woff');
       font-weight: 100;
       font-style: italic;
-    }@font-face {
+    }
+
+    @font-face {
       font-family: 'Demo';
       src: url('/path-to-font-normal.woff') format('woff2'),
           url('/path-to-font-normal.woff2') format('woff');
       font-weight: 100;
       font-style: normal;
-    }@font-face {
+    }
+
+    @font-face {
       font-family: 'Demo';
-      src: url('/path-to-font-thin.woff') format('woff2'),
-          url('/path-to-font-thin.woff2') format('woff');
+      src: url('/path-to-font-semibold-italic.woff') format('woff2'),
+          url('/path-to-font-semibold-italic.woff2') format('woff');
+      font-weight: 600;
+      font-style: italic;
+    }
+
+    @font-face {
+      font-family: 'Demo';
+      src: url('/path-to-font-bold.woff') format('woff2'),
+          url('/path-to-font-bold.woff2') format('woff');
       font-weight: 700;
       font-style: normal;
     }"
-  `);
+`);
 
-  expect(font.styles).toEqual({
+  expect(DemoFont.styles).toEqual({
     '100': {
       Italic: { fontFamily: 'Demo', fontStyle: 'italic', fontWeight: 100 },
       Normal: { fontFamily: 'Demo', fontWeight: 100 },
     },
     '700': { fontFamily: 'Demo', fontWeight: 700 },
+    '600': {
+      fontFamily: 'Demo',
+      fontStyle: 'italic',
+      fontWeight: 600,
+    },
     Bold: { fontFamily: 'Demo', fontWeight: 700 },
     Thin: {
       Italic: { fontFamily: 'Demo', fontStyle: 'italic', fontWeight: 100 },
       Normal: { fontFamily: 'Demo', fontWeight: 100 },
+    },
+    DemiBold: {
+      fontFamily: 'Demo',
+      fontStyle: 'italic',
+      fontWeight: 600,
+    },
+    SemiBold: {
+      fontFamily: 'Demo',
+      fontStyle: 'italic',
+      fontWeight: 600,
     },
   });
 });

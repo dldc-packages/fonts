@@ -80,10 +80,17 @@ export interface FontWeightPaths {
   woff2: string;
 }
 
-export interface FontWeightConfig {
-  normal?: FontWeightPaths | string;
-  italic?: FontWeightPaths | string;
-}
+export type FontWeightConfigBoth = {
+  normal: FontWeightPaths | string;
+  italic: FontWeightPaths | string;
+};
+export type FontWeightConfigItalic = { italic: FontWeightPaths | string };
+export type FontWeightConfigNormal = { normal: FontWeightPaths | string };
+
+export type FontWeightConfig =
+  | FontWeightConfigBoth
+  | FontWeightConfigItalic
+  | FontWeightConfigNormal;
 
 export type FontConfig = {
   [K in FontWeightNum]?: FontWeightConfig;
@@ -96,8 +103,6 @@ type AllWeight<T extends FontConfig> = {
 type WeightNumFromWeight<T extends FontWeight> = {
   [K in keyof FontByWeightNum]: T extends FontByWeightNum[K] ? K : never;
 }[keyof FontByWeightNum];
-
-type FontWeightConfigBoth = Required<FontWeightConfig>;
 
 type FontWeightStyle<T extends FontWeightConfig> = T extends FontWeightConfigBoth
   ? { Normal: CSSFontObj; Italic: CSSFontObj }
@@ -120,16 +125,21 @@ export function createFont<F extends FontConfig>(name: string, config: F): Font<
 }
 
 function createFontFace(name: string, config: FontConfig): string {
-  return Object.keys(config).reduce((acc, weight) => {
-    return acc + createWeightFontFace(name, parseInt(weight, 10), (config as any)[weight]);
-  }, '');
+  return Object.keys(config)
+    .map((weight) => {
+      return createWeightFontFace(name, parseInt(weight, 10), (config as any)[weight]);
+    })
+    .filter((v) => v.length > 0)
+    .join('\n\n');
 }
 
 function createWeightFontFace(name: string, weight: number, config: FontWeightConfig): string {
   return [
-    config.italic ? createSingleFontFace(name, weight, true, config.italic) : '',
-    config.normal ? createSingleFontFace(name, weight, false, config.normal) : '',
-  ].join('');
+    'italic' in config ? createSingleFontFace(name, weight, true, config.italic) : '',
+    'normal' in config ? createSingleFontFace(name, weight, false, config.normal) : '',
+  ]
+    .filter((v) => v.length > 0)
+    .join('\n\n');
 }
 
 function createSingleFontFace(
@@ -152,18 +162,21 @@ function createSingleFontFace(
 }
 
 function createStyle<T extends FontConfig>(name: string, config: T): FontStyles<T> {
-  const cache: { [K in FontWeightNum]?: FontWeightStyle<any> } = {};
+  const cache: { [K in FontWeightNum]?: FontWeightStyle<any> | null } = {};
 
   return Object.keys(FontWeightNames).reduce<FontStyles<T>>((acc, weight) => {
     const weightNum = resolveFontWeight(weight as any);
-    if ((config as any)[weightNum] === undefined) {
+    const conf: FontWeightConfig | undefined = (config as any)[weightNum];
+    if (conf === undefined) {
       return acc;
     }
-    const fn = cache[weightNum] || createWeightStyle(name, weightNum, (config as any)[weightNum]);
+    const styles = cache[weightNum] || createWeightStyle(name, weightNum, conf);
     if (!cache[weightNum]) {
-      cache[weightNum] = fn;
+      cache[weightNum] = styles;
     }
-    (acc as any)[weight] = fn;
+    if (styles !== null) {
+      (acc as any)[weight] = styles;
+    }
     return acc;
   }, {} as any);
 }
@@ -172,8 +185,8 @@ function createWeightStyle<T extends FontWeightConfig>(
   name: string,
   weight: FontWeightNum,
   config: T
-): FontWeightStyle<T> {
-  if (config.italic && config.normal) {
+): FontWeightStyle<T> | null {
+  if ('italic' in config && 'normal' in config) {
     return {
       Italic: {
         fontFamily: name,
@@ -186,18 +199,19 @@ function createWeightStyle<T extends FontWeightConfig>(
       },
     } as any;
   }
-  if (config.italic) {
+  if ('italic' in config) {
     return {
       fontFamily: name,
       fontWeight: weight,
       fontStyle: 'italic',
     } as any;
   }
-  if (config.normal) {
+  if ('normal' in config) {
     return {
       fontFamily: name,
       fontWeight: weight,
     } as any;
   }
-  return {} as any;
+  /* istanbul ignore next */
+  return null;
 }

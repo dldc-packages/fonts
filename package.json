@@ -13,54 +13,52 @@
   },
   "license": "MIT",
   "author": "Etienne Dldc",
-  "main": "dist/index.js",
-  "module": "dist/ts-fonts.esm.js",
-  "typings": "dist/index.d.ts",
-  "directories": {
-    "example": "example",
-    "test": "test"
+  "exports": {
+    ".": {
+      "import": "./dist/ts-font.es.js",
+      "require": "./dist/ts-font.cjs.js"
+    }
   },
+  "main": "./dist/ts-font.cjs.js",
+  "module": "./dist/ts-font.es.js",
+  "types": "./dist/mod.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsdx build --target web",
-    "lint": "tsdx lint src test",
-    "pub": "yarn build && np",
-    "start": "tsdx watch",
-    "test": "tsdx test",
-    "test:watch": "tsdx test --watch"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "tsdx lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 100,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
+    "build": "rimraf dist && vite build && yarn build:types",
+    "build:types": "tsc -p ./tsconfig.build.json",
+    "codecov": "codecov",
+    "lint": "prettier . --check && eslint . && tsc --noEmit",
+    "lint:fix": "prettier . --write . && eslint . --fix",
+    "release": "yarn build && np",
+    "test": "yarn lint && jest --coverage",
+    "test:run": "jest",
+    "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "^26.0.20",
-    "husky": "^4.3.8",
-    "np": "^7.2.0",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.1.0",
-    "typescript": "^4.1.3"
+    "@types/fs-extra": "^9.0.12",
+    "@types/jest": "^27.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "codecov": "^3.8.3",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "fs-extra": "^10.0.0",
+    "jest": "^27.0.6",
+    "jest-ts-tsx-resolver": "^1.0.0",
+    "np": "^7.5.0",
+    "prettier": "^2.3.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.4",
+    "tslib": "^2.3.1",
+    "typescript": "^4.3.5",
+    "vite": "^2.4.4"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "prettier/@typescript-eslint",
-      "plugin:prettier/recommended"
-    ],
-    "settings": {
-      "react": {
-        "version": "999.999.999"
-      }
-    }
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }
