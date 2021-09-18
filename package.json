@@ -21,7 +21,7 @@
   },
   "main": "./dist/ts-font.cjs.js",
   "module": "./dist/ts-font.es.js",
-  "types": "./dist/mod.d.ts",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],

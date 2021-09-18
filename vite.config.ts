@@ -5,7 +5,7 @@ export default defineConfig({
   build: {
     lib: {
       formats: ['es', 'cjs'],
-      entry: path.resolve(process.cwd(), 'src/mod.ts'),
+      entry: path.resolve(process.cwd(), 'src/index.ts'),
       name: 'Dcosy',
       fileName: (format) => `ts-font.${format}.js`,
     },
