@@ -22,32 +22,28 @@ test('create a font', () => {
   expect(DemoFont.fontFaces).toMatchInlineSnapshot(`
     "@font-face {
       font-family: 'Demo';
-      src: url('/path-to-font-normal-italic.woff') format('woff2'),
-          url('/path-to-font-normal-italic.woff2') format('woff');
+      src: url('/path-to-font-normal-italic.woff') format('woff2'), url('/path-to-font-normal-italic.woff2') format('woff');
       font-weight: 100;
       font-style: italic;
     }
 
     @font-face {
       font-family: 'Demo';
-      src: url('/path-to-font-normal.woff') format('woff2'),
-          url('/path-to-font-normal.woff2') format('woff');
+      src: url('/path-to-font-normal.woff') format('woff2'), url('/path-to-font-normal.woff2') format('woff');
       font-weight: 100;
       font-style: normal;
     }
 
     @font-face {
       font-family: 'Demo';
-      src: url('/path-to-font-semibold-italic.woff') format('woff2'),
-          url('/path-to-font-semibold-italic.woff2') format('woff');
+      src: url('/path-to-font-semibold-italic.woff') format('woff2'), url('/path-to-font-semibold-italic.woff2') format('woff');
       font-weight: 600;
       font-style: italic;
     }
 
     @font-face {
       font-family: 'Demo';
-      src: url('/path-to-font-bold.woff') format('woff2'),
-          url('/path-to-font-bold.woff2') format('woff');
+      src: url('/path-to-font-bold.woff') format('woff2'), url('/path-to-font-bold.woff2') format('woff');
       font-weight: 700;
       font-style: normal;
     }"
@@ -80,4 +76,33 @@ test('create a font', () => {
       fontWeight: 600,
     },
   });
+
+  expect(DemoFont.fontFacesRules.length).toBe(4);
+
+  expect(DemoFont.fontFacesRules).toEqual([
+    {
+      fontFamily: 'Demo',
+      fontStyle: 'italic',
+      fontWeight: 100,
+      src: "url('/path-to-font-normal-italic.woff') format('woff2'), url('/path-to-font-normal-italic.woff2') format('woff')",
+    },
+    {
+      fontFamily: 'Demo',
+      fontStyle: 'normal',
+      fontWeight: 100,
+      src: "url('/path-to-font-normal.woff') format('woff2'), url('/path-to-font-normal.woff2') format('woff')",
+    },
+    {
+      fontFamily: 'Demo',
+      fontStyle: 'italic',
+      fontWeight: 600,
+      src: "url('/path-to-font-semibold-italic.woff') format('woff2'), url('/path-to-font-semibold-italic.woff2') format('woff')",
+    },
+    {
+      fontFamily: 'Demo',
+      fontStyle: 'normal',
+      fontWeight: 700,
+      src: "url('/path-to-font-bold.woff') format('woff2'), url('/path-to-font-bold.woff2') format('woff')",
+    },
+  ]);
 });

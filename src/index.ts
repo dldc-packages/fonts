@@ -112,53 +112,79 @@ type FontStyles<T extends FontConfig> = {
   [W in AllWeight<T>]: FontWeightStyle<T[WeightNumFromWeight<W>]>;
 };
 
+export type FontFaceRule = {
+  fontFamily: string;
+  src: string;
+  fontWeight: number;
+  fontStyle: 'italic' | 'normal';
+};
+
 export interface Font<T extends FontConfig> {
+  name: string;
   fontFaces: string;
+  fontFacesRules: Array<FontFaceRule>;
   styles: FontStyles<T>;
 }
 
 export function createFont<F extends FontConfig>(name: string, config: F): Font<F> {
+  const rules = createFontFaceRules(name, config);
   return {
-    fontFaces: createFontFace(name, config),
+    name,
+    fontFacesRules: rules,
+    fontFaces: serializeFontFaceRules(rules),
     styles: createStyle(name, config),
   };
 }
 
-function createFontFace(name: string, config: FontConfig): string {
+function serializeFontFaceRules(rules: Array<FontFaceRule>): string {
+  return rules.map((rule) => serializeFontFaceRule(rule)).join('\n\n');
+}
+
+function serializeFontFaceRule(rule: FontFaceRule): string {
+  return [
+    `@font-face {`,
+    `  font-family: '${rule.fontFamily}';`,
+    `  src: ${rule.src};`,
+    `  font-weight: ${rule.fontWeight};`,
+    `  font-style: ${rule.fontStyle};`,
+    `}`,
+  ].join('\n');
+}
+
+function createFontFaceRules(name: string, config: FontConfig): Array<FontFaceRule> {
   return Object.keys(config)
     .map((weight) => {
-      return createWeightFontFace(name, parseInt(weight, 10), (config as any)[weight]);
+      return createWeightFontFaceRules(name, parseInt(weight, 10), (config as any)[weight]);
     })
-    .filter((v) => v.length > 0)
-    .join('\n\n');
+    .flat()
+    .filter((v): v is FontFaceRule => v !== null);
 }
 
-function createWeightFontFace(name: string, weight: number, config: FontWeightConfig): string {
+function createWeightFontFaceRules(
+  name: string,
+  weight: number,
+  config: FontWeightConfig
+): Array<FontFaceRule | null> {
   return [
-    'italic' in config ? createSingleFontFace(name, weight, true, config.italic) : '',
-    'normal' in config ? createSingleFontFace(name, weight, false, config.normal) : '',
-  ]
-    .filter((v) => v.length > 0)
-    .join('\n\n');
+    'italic' in config ? createSingleFontFaceRule(name, weight, true, config.italic) : null,
+    'normal' in config ? createSingleFontFaceRule(name, weight, false, config.normal) : null,
+  ];
 }
 
-function createSingleFontFace(
+function createSingleFontFaceRule(
   name: string,
   weight: number,
   italic: boolean,
   paths: FontWeightPaths | string
-) {
+): FontFaceRule {
   const woff = typeof paths === 'string' ? paths + '.woff' : paths.woff;
   const woff2 = typeof paths === 'string' ? paths + '.woff2' : paths.woff2;
-  return [
-    `@font-face {`,
-    `  font-family: '${name}';`,
-    `  src: url('${woff}') format('woff2'),`,
-    `      url('${woff2}') format('woff');`,
-    `  font-weight: ${weight};`,
-    `  font-style: ${italic ? 'italic' : 'normal'};`,
-    `}`,
-  ].join('\n');
+  return {
+    fontFamily: name,
+    fontStyle: italic ? 'italic' : 'normal',
+    fontWeight: weight,
+    src: `url('${woff}') format('woff2'), url('${woff2}') format('woff')`,
+  };
 }
 
 function createStyle<T extends FontConfig>(name: string, config: T): FontStyles<T> {
