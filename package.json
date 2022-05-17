@@ -13,49 +13,48 @@
   },
   "license": "MIT",
   "author": "Etienne Dldc",
+  "sideEffects": false,
   "exports": {
     ".": {
-      "import": "./dist/ts-font.es.js",
-      "require": "./dist/ts-font.cjs.js"
+      "import": "./dist/mod.mjs",
+      "require": "./dist/mod.js"
     }
   },
-  "main": "./dist/ts-font.cjs.js",
-  "module": "./dist/ts-font.es.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/mod.js",
+  "module": "./dist/mod.mjs",
+  "types": "./dist/mod.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && vite build && yarn build:types",
-    "build:types": "tsc -p ./tsconfig.build.json",
-    "codecov": "codecov",
-    "lint": "prettier . --check && eslint . && tsc --noEmit",
-    "lint:fix": "prettier . --write . && eslint . --fix",
-    "release": "yarn build && np",
-    "test": "yarn lint && jest --coverage",
+    "build": "rimraf dist deno_dist && tsup src/mod.ts --format esm,cjs --dts && denoify",
+    "build:watch": "tsup src/mod.ts --format esm,cjs --dts --watch",
+    "dev": "tsup src/mod.ts --format esm,cjs --watch",
+    "lint": "prettier src --check && eslint src && tsc --noEmit",
+    "lint:fix": "prettier src --write && eslint src --fix",
+    "release": "yarn run build && np",
+    "test": "yarn run lint && jest --coverage",
+    "test:cov:watch": "jest --coverage --watch --all",
     "test:run": "jest",
     "test:watch": "jest --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/fs-extra": "^9.0.13",
-    "@types/jest": "^27.0.2",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "codecov": "^3.8.3",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "fs-extra": "^10.0.0",
-    "jest": "^27.2.5",
-    "jest-ts-tsx-resolver": "^1.0.0",
-    "np": "^7.5.0",
-    "prettier": "^2.3.1",
+    "@types/jest": "^27.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "denoify": "^0.11.0",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^27.5.1",
+    "np": "^7.6.1",
+    "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
-    "ts-jest": "^27.0.4",
-    "tslib": "^2.3.1",
-    "typescript": "^4.3.5",
-    "vite": "^2.6.5"
+    "ts-jest": "^27.1.4",
+    "tsup": "^5.12.6",
+    "typescript": "^4.6.3"
   },
   "publishConfig": {
     "access": "public",
