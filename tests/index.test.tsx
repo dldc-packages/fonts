@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest';
 import { Font } from '../src/mod';
 
 test('create a font', () => {

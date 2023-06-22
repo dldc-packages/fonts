@@ -10,14 +10,15 @@ const FONT_WEIGHT_OBJS = [
   { num: 900, alias: ['Black', 'Heavy'] },
 ] as const;
 
-const FONT_WEIGHT_NAMES: ReadonlyArray<{ weight: FontWeight; num: FontWeightNum }> =
-  FONT_WEIGHT_OBJS.reduce<Array<{ weight: FontWeight; num: FontWeightNum }>>((acc, item) => {
-    acc.push({ weight: item.num, num: item.num });
-    item.alias.forEach((alias) => {
-      acc.push({ weight: alias, num: item.num });
-    });
-    return acc;
-  }, []);
+const FONT_WEIGHT_NAMES: ReadonlyArray<{ weight: FontWeight; num: FontWeightNum }> = FONT_WEIGHT_OBJS.reduce<
+  Array<{ weight: FontWeight; num: FontWeightNum }>
+>((acc, item) => {
+  acc.push({ weight: item.num, num: item.num });
+  item.alias.forEach((alias) => {
+    acc.push({ weight: alias, num: item.num });
+  });
+  return acc;
+}, []);
 
 export type FontWeightObjs = typeof FONT_WEIGHT_OBJS;
 
@@ -29,10 +30,7 @@ export type FontWeightAlias = AnyFontWeightObj['alias'][number];
 
 export type FontWeight = FontWeightNum | FontWeightAlias;
 
-export type FontWeightAliasFromNum<N extends FontWeightNum> = Extract<
-  AnyFontWeightObj,
-  { num: N }
->['alias'][number];
+export type FontWeightAliasFromNum<N extends FontWeightNum> = Extract<AnyFontWeightObj, { num: N }>['alias'][number];
 
 export type FontWeightFromNum<N extends FontWeightNum> = N | FontWeightAliasFromNum<N>;
 
@@ -76,10 +74,7 @@ export type FontWeightConfigBoth<T> = {
 export type FontWeightConfigItalic<T> = { italic: T };
 export type FontWeightConfigNormal<T> = { normal: T };
 
-export type FontWeightConfig<T> =
-  | FontWeightConfigBoth<T>
-  | FontWeightConfigItalic<T>
-  | FontWeightConfigNormal<T>;
+export type FontWeightConfig<T> = FontWeightConfigBoth<T> | FontWeightConfigItalic<T> | FontWeightConfigNormal<T>;
 
 export type FontWeightConfigAny = FontWeightConfig<any>;
 
@@ -100,9 +95,7 @@ export type FontWeightStyle<T extends FontWeightConfigAny> = T extends FontWeigh
 export type ExtractFontWeightStyle<
   T extends FontConfigAny,
   W extends FontWeight
-> = T[FontWeightToNum<W>] extends FontWeightConfigAny
-  ? FontWeightStyle<T[FontWeightToNum<W>]>
-  : never;
+> = T[FontWeightToNum<W>] extends FontWeightConfigAny ? FontWeightStyle<T[FontWeightToNum<W>]> : never;
 
 export type FontStyles<T extends FontConfigAny> = {
   [W in FontConfigAllWeights<T>]: ExtractFontWeightStyle<T, W>;
