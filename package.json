@@ -1,15 +1,15 @@
 {
-  "name": "ts-fonts",
+  "name": "@dldc/fonts",
   "version": "3.0.0",
   "description": "A tool to create dynamic colors by interpolating multiple colors",
   "keywords": [],
-  "homepage": "https://github.com/etienne-dldc/ts-fonts#readme",
+  "homepage": "https://github.com/dldc-packages/fonts#readme",
   "bugs": {
-    "url": "https://github.com/etienne-dldc/ts-fonts/issues"
+    "url": "https://github.com/dldc-packages/fonts/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/etienne-dldc/ts-fonts.git"
+    "url": "git+https://github.com/dldc-packages/fonts.git"
   },
   "license": "MIT",
   "author": "Etienne Dldc <e.deladonchamps@gmail.com>",
