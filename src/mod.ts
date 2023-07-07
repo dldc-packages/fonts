@@ -94,7 +94,7 @@ export type FontWeightStyle<T extends FontWeightConfigAny> = T extends FontWeigh
 
 export type ExtractFontWeightStyle<
   T extends FontConfigAny,
-  W extends FontWeight
+  W extends FontWeight,
 > = T[FontWeightToNum<W>] extends FontWeightConfigAny ? FontWeightStyle<T[FontWeightToNum<W>]> : never;
 
 export type FontStyles<T extends FontConfigAny> = {
@@ -147,7 +147,7 @@ function createStyle<T extends FontConfigAny>(name: string, config: T): FontStyl
 function createWeightStyle(
   name: string,
   num: FontWeightNum,
-  config: FontWeightConfigAny
+  config: FontWeightConfigAny,
 ): FontWeightStyle<FontWeightConfigAny> | null {
   if ('italic' in config && 'normal' in config) {
     return {
