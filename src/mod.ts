@@ -54,7 +54,7 @@ function resolveFontWeight(weight: FontWeight): FontWeightNum {
   if (typeof weight === 'number') {
     return weight;
   }
-  const obj = FONT_WEIGHT_OBJS.find((w) => (w.alias as any).includes(weight));
+  const obj = FONT_WEIGHT_OBJS.find((w) => (w.alias as readonly any[]).includes(weight));
   if (!obj) {
     throw new Error(`Invalid font weight: ${weight}`);
   }
