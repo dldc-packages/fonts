@@ -41,8 +41,8 @@ export type FontWeightNumFromAlias<A extends FontWeightAlias> = {
 export type FontWeightToNum<N extends FontWeight> = N extends FontWeightAlias
   ? FontWeightNumFromAlias<N>
   : N extends number
-  ? N
-  : never;
+    ? N
+    : never;
 
 export const Font = {
   resolveFontWeight,
