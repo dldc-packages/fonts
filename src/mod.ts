@@ -88,9 +88,8 @@ export type FontConfigAllWeights<T extends FontConfigAny> = keyof T extends Font
   ? FontWeightFromNum<keyof T>
   : never;
 
-export type FontWeightStyle<T extends FontWeightConfigAny> = T extends FontWeightConfigBoth<any>
-  ? { Normal: CSSFontObj; Italic: CSSFontObj }
-  : CSSFontObj;
+export type FontWeightStyle<T extends FontWeightConfigAny> =
+  T extends FontWeightConfigBoth<any> ? { Normal: CSSFontObj; Italic: CSSFontObj } : CSSFontObj;
 
 export type ExtractFontWeightStyle<
   T extends FontConfigAny,
